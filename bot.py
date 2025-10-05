@@ -181,7 +181,7 @@ def main() -> None:
     
     # Start the Bot
     print("✅ Bot is running... Press Ctrl+C to stop.")
-    application.run_polling(allowed_updates=Update.ALL_TYPES)
+    application.run_polling(drop_pending_updates=True)
 
 if __name__ == '__main__':
     main()
