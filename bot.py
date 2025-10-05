@@ -1,7 +1,7 @@
 import logging
 import os
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
+from telegram import Update
+from telegram.ext import Application, CommandHandler, ContextTypes
 import random
 from threading import Thread
 from flask import Flask
@@ -35,6 +35,11 @@ TRUTHS = [
     "Have you ever ghosted someone?",
     "What's your most unpopular opinion?",
     "What's the craziest dream you've ever had?",
+    "What's the most embarrassing thing in your search history?",
+    "Who was your worst kiss?",
+    "What's your biggest regret?",
+    "Have you ever pretended to be sick to skip something?",
+    "What's the longest you've gone without showering?",
 ]
 
 # Dare challenges
@@ -59,6 +64,11 @@ DARES = [
     "Do 50 jumping jacks.",
     "Share your screen time report.",
     "Send a meme that describes your life right now.",
+    "Text your mom 'I love you' right now.",
+    "Do 10 burpees and send proof.",
+    "Share an embarrassing voice note.",
+    "Let someone send a text from your phone.",
+    "Post a story saying 'I lost a bet'.",
 ]
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -71,18 +81,20 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             f"🎭 Welcome {user.mention_html()}!\n\n"
             "I'm your Truth or Dare bot!\n\n"
             "<b>Commands:</b>\n"
-            "/play - Start playing Truth or Dare\n"
-            "/help - Show help message\n\n"
+            "🤔 /truth - Get a truth question\n"
+            "💪 /dare - Get a dare challenge\n"
+            "❓ /help - Show help message\n\n"
             "💡 <b>Tip:</b> Add me to a group chat to play with friends!\n\n"
             "Let's have some fun! 🎉"
         )
     else:
         welcome_message = (
             f"🎭 Hello everyone! I'm the Truth or Dare bot!\n\n"
-            "<b>Commands:</b>\n"
-            "/play - Start a game\n"
-            "/help - Show help\n\n"
-            "Ready to have some fun? Type /play to begin! 🎉"
+            "<b>How to play:</b>\n"
+            "• Type /truth for a truth question\n"
+            "• Type /dare for a dare challenge\n"
+            "• Type /help for more info\n\n"
+            "Ready to have some fun? 🎉"
         )
     
     await update.message.reply_html(welcome_message)
@@ -91,80 +103,58 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     """Send a message when the command /help is issued."""
     help_text = (
         "🎮 <b>How to Play:</b>\n\n"
-        "1. Use /play to start the game\n"
-        "2. Choose Truth or Dare using the buttons\n"
-        "3. Complete your challenge!\n"
-        "4. Click 'Play Again' or use /play for another round\n\n"
+        "<b>Commands:</b>\n"
+        "🤔 /truth - Get a random truth question\n"
+        "💪 /dare - Get a random dare challenge\n"
+        "❓ /help - Show this help message\n\n"
         "<b>Group Play:</b>\n"
-        "• Anyone can start a game with /play\n"
-        "• Take turns choosing Truth or Dare\n"
-        "• Have fun and be brave! 💪\n\n"
+        "• Anyone can use /truth or /dare anytime\n"
+        "• All messages stay in the chat for everyone to see\n"
+        "• Take turns and have fun!\n"
+        "• Be honest and brave! 💪\n\n"
         "<b>Private Play:</b>\n"
         "• Chat with me directly for solo games\n"
-        "• Perfect for practicing before group games!\n\n"
+        "• Perfect for practicing!\n\n"
         "Enjoy! 🎉"
     )
     await update.message.reply_html(help_text)
 
-async def play(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Show Truth or Dare buttons."""
-    keyboard = [
-        [
-            InlineKeyboardButton("🤔 Truth", callback_data='truth'),
-            InlineKeyboardButton("💪 Dare", callback_data='dare')
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+async def truth_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send a random truth question."""
+    user = update.effective_user
+    truth = random.choice(TRUTHS)
     
-    chat_type = update.effective_chat.type
-    if chat_type == "private":
-        message = '🎭 Choose wisely...\n\n<b>Truth or Dare?</b>'
-    else:
-        user = update.effective_user.first_name
-        message = f'🎭 {user} wants to play!\n\n<b>Truth or Dare?</b>'
+    message = (
+        f"🤔 <b>TRUTH for {user.mention_html()}:</b>\n\n"
+        f"{truth}\n\n"
+        f"💬 Answer honestly!"
+    )
     
-    await update.message.reply_html(message, reply_markup=reply_markup)
+    await update.message.reply_html(message)
 
-async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Handle button presses."""
-    query = update.callback_query
-    await query.answer()
+async def dare_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send a random dare challenge."""
+    user = update.effective_user
+    dare = random.choice(DARES)
     
-    user = query.from_user.first_name
+    message = (
+        f"💪 <b>DARE for {user.mention_html()}:</b>\n\n"
+        f"{dare}\n\n"
+        f"🔥 You got this!"
+    )
     
-    if query.data == 'truth':
-        truth = random.choice(TRUTHS)
-        message = f"🤔 <b>TRUTH for {user}:</b>\n\n{truth}\n\n💬 Answer honestly!"
-    elif query.data == 'dare':
-        dare = random.choice(DARES)
-        message = f"💪 <b>DARE for {user}:</b>\n\n{dare}\n\n🔥 You got this!"
-    elif query.data == 'play_again':
-        keyboard = [
-            [
-                InlineKeyboardButton("🤔 Truth", callback_data='truth'),
-                InlineKeyboardButton("💪 Dare", callback_data='dare')
-            ]
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(
-            text=f'🎭 {user} is playing!\n\n<b>Truth or Dare?</b>',
-            reply_markup=reply_markup,
-            parse_mode='HTML'
-        )
-        return
-    
-    # Add play again button
-    keyboard = [[InlineKeyboardButton("🔄 Play Again", callback_data='play_again')]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    
-    await query.edit_message_text(text=message, reply_markup=reply_markup, parse_mode='HTML')
+    await update.message.reply_html(message)
 
 # Flask web server to keep Render happy
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "Bot is running!"
+    return "✅ Truth or Dare Bot is running!"
+
+@app.route('/health')
+def health():
+    return "OK"
 
 def run_flask():
     port = int(os.environ.get('PORT', 10000))
@@ -187,10 +177,8 @@ def main() -> None:
     # Register command handlers
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("help", help_command))
-    application.add_handler(CommandHandler("play", play))
-    
-    # Register callback handler for buttons
-    application.add_handler(CallbackQueryHandler(button_callback))
+    application.add_handler(CommandHandler("truth", truth_command))
+    application.add_handler(CommandHandler("dare", dare_command))
     
     # Start Flask in a separate thread
     flask_thread = Thread(target=run_flask)
