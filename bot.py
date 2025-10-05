@@ -160,9 +160,9 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 def main() -> None:
     """Start the bot."""
     # Get token from environment variable (for cloud deployment) or use hardcoded token
-    TOKEN = os.environ.get('BOT_TOKEN', 'YOUR_TOKEN_HERE')
+    TOKEN = os.environ.get('BOT_TOKEN', '8099766090:AAH7-FarY-kZoP7PuEriLss3Fizq7NJQFbo')
     
-    if TOKEN == '8099766090:AAH7-FarY-kZoP7PuEriLss3Fizq7NJQFbo':
+    if TOKEN == 'YOUR_BOT_TOKEN':
         print("⚠️  WARNING: Please set your bot token!")
         print("For local testing, replace 'YOUR_TOKEN_HERE' in the code.")
         print("For cloud deployment, set the BOT_TOKEN environment variable.")
