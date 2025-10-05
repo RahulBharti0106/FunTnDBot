@@ -3,6 +3,8 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 import random
+from threading import Thread
+from flask import Flask
 
 # Enable logging
 logging.basicConfig(
@@ -157,12 +159,23 @@ async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
     
     await query.edit_message_text(text=message, reply_markup=reply_markup, parse_mode='HTML')
 
+# Flask web server to keep Render happy
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Bot is running!"
+
+def run_flask():
+    port = int(os.environ.get('PORT', 10000))
+    app.run(host='0.0.0.0', port=port)
+
 def main() -> None:
     """Start the bot."""
     # Get token from environment variable (for cloud deployment) or use hardcoded token
     TOKEN = os.environ.get('BOT_TOKEN', '8099766090:AAH7-FarY-kZoP7PuEriLss3Fizq7NJQFbo')
     
-    if TOKEN == 'YOUR_BOT_TOKEN':
+    if TOKEN == 'YOUR_TOKEN_HERE':
         print("⚠️  WARNING: Please set your bot token!")
         print("For local testing, replace 'YOUR_TOKEN_HERE' in the code.")
         print("For cloud deployment, set the BOT_TOKEN environment variable.")
@@ -178,6 +191,11 @@ def main() -> None:
     
     # Register callback handler for buttons
     application.add_handler(CallbackQueryHandler(button_callback))
+    
+    # Start Flask in a separate thread
+    flask_thread = Thread(target=run_flask)
+    flask_thread.daemon = True
+    flask_thread.start()
     
     # Start the Bot
     print("✅ Bot is running... Press Ctrl+C to stop.")
