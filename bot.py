@@ -100,6 +100,74 @@ WOULD_YOU_RATHER = [
     "Would you rather have to wear clown shoes every day or a clown wig every day?",
 ]
 
+# Roasts
+ROASTS = [
+    "You're not stupid, you just have bad luck when thinking.",
+    "I'd agree with you, but then we'd both be wrong.",
+    "You're like a software update. Whenever I see you, I think 'not now.'",
+    "If laughter is the best medicine, your face must be curing the world.",
+    "You're the reason the gene pool needs a lifeguard.",
+    "I'm not saying you're dumb, but you've got the survival instincts of a dodo bird.",
+    "You bring everyone so much joy... when you leave the room.",
+    "Your secrets are safe with me. I wasn't even listening.",
+    "You're not the dumbest person in the world, but you better hope they don't die.",
+    "I'd challenge you to a battle of wits, but I see you came unarmed.",
+    "You're like a cloud. When you disappear, it's a beautiful day.",
+    "I'm jealous of people who haven't met you yet.",
+    "You're proof that evolution can go in reverse.",
+    "If you were any more inbred, you'd be a sandwich.",
+    "You're the human version of a participation trophy.",
+    "Somewhere out there is a tree tirelessly producing oxygen for you. Go apologize to it.",
+    "You're like Monday mornings - nobody likes you.",
+    "I'd give you a nasty look, but you've already got one.",
+    "You're not lazy, you're just on energy-saving mode... permanently.",
+    "You have the perfect face for radio.",
+    "If brains were dynamite, you wouldn't have enough to blow your nose.",
+    "You're the reason God created the middle finger.",
+    "I'd roast you, but my mom says I'm not allowed to burn trash.",
+    "You're like a plunger - you bring up old crap that nobody wants to see.",
+    "I would ask how old you are, but I know you can't count that high.",
+    "You're so fake, even China denied making you.",
+    "I'm not insulting you, I'm just describing you.",
+    "You're the reason why shampoo has instructions.",
+    "If I had a face like yours, I'd sue my parents.",
+    "You're about as useful as a screen door on a submarine.",
+]
+
+# Fate Predictions
+FATES = [
+    "Your future holds... absolutely nothing impressive. But hey, at least you tried!",
+    "You will find true love... right after you stop looking in the mirror so much.",
+    "A great opportunity awaits you... to embarrass yourself in public. Again.",
+    "Your destiny is to become legendary... at procrastination.",
+    "Fortune favors the bold. Unfortunately, you're not bold, just loud.",
+    "You will soon receive unexpected money... which you'll immediately waste on something stupid.",
+    "A mysterious stranger will change your life... by blocking you on social media.",
+    "Your dreams will come true... but only the embarrassing ones.",
+    "Success is in your future... if you redefine what 'success' means.",
+    "You will live a long and happy life... in your imagination.",
+    "A big change is coming... you'll finally update your profile picture from 2015.",
+    "Your destiny is to inspire others... to not be like you.",
+    "The stars say you'll find wisdom... but they're probably talking about someone else.",
+    "Great wealth is in your future... in Monopoly money.",
+    "You will travel the world... via Google Maps street view.",
+    "Your future is bright... unlike your decision-making skills.",
+    "A surprise awaits you... it's the consequences of your actions.",
+    "You will achieve greatness... at being average.",
+    "The universe has big plans for you... mostly as a cautionary tale.",
+    "Your fate is sealed... with duct tape and bad choices.",
+    "You will meet your soulmate... they'll reject you, but you'll meet them!",
+    "Success will knock on your door... but you'll be in the bathroom and miss it.",
+    "Your future holds adventure... like finding a good parking spot.",
+    "You will be remembered... for that one embarrassing thing you did.",
+    "Destiny awaits... it's just stuck in traffic right now.",
+    "The cosmos predict... you'll spend way too much time on your phone today.",
+    "Your fortune says... you'll find something you lost. It was in your hand the whole time.",
+    "A prophecy foretold... you'll accidentally like someone's old post while stalking them.",
+    "The stars align to reveal... you'll eat way more pizza than you planned.",
+    "Your destiny is written... in autocorrect fails and typos.",
+]
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
@@ -108,11 +176,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     if chat_type == "private":
         welcome_message = (
             f"🎭 Welcome {user.mention_html()}!\n\n"
-            "I'm your Truth or Dare bot!\n\n"
+            "I'm your Truth or Dare bot with extra fun features!\n\n"
             "<b>Commands:</b>\n"
             "🤔 /truth - Get a truth question\n"
             "💪 /dare - Get a dare challenge\n"
             "🤔💭 /wyr - Would you rather\n"
+            "🔥 /roast - Get roasted\n"
+            "🔮 /fate - Your fate prediction\n"
             "❓ /help - Show help message\n\n"
             "💡 <b>Tip:</b> Add me to a group chat to play with friends!\n\n"
             "Let's have some fun! 🎉"
@@ -124,6 +194,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             "• Type /truth for a truth question\n"
             "• Type /dare for a dare challenge\n"
             "• Type /wyr for would you rather\n"
+            "• Type /roast to get roasted\n"
+            "• Type /fate for your fate prediction\n"
             "• Type /help for more info\n\n"
             "Ready to have some fun? 🎉"
         )
@@ -138,9 +210,11 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "🤔 /truth - Get a random truth question\n"
         "💪 /dare - Get a random dare challenge\n"
         "🤔💭 /wyr - Would you rather question\n"
+        "🔥 /roast - Get roasted by the bot\n"
+        "🔮 /fate - Get your fate prediction\n"
         "❓ /help - Show this help message\n\n"
         "<b>Group Play:</b>\n"
-        "• Anyone can use /truth, /dare, or /wyr anytime\n"
+        "• Anyone can use any command anytime\n"
         "• All messages stay in the chat for everyone to see\n"
         "• Take turns and have fun!\n"
         "• Be honest and brave! 💪\n\n"
@@ -190,6 +264,32 @@ async def wyr_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     
     await update.message.reply_html(message)
 
+async def roast_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Roast a user with savage but funny burns."""
+    user = update.effective_user
+    roast = random.choice(ROASTS)
+    
+    message = (
+        f"🔥 <b>ROAST for {user.mention_html()}:</b>\n\n"
+        f"{roast}\n\n"
+        f"😏 Just kidding... or am I?"
+    )
+    
+    await update.message.reply_html(message)
+
+async def fate_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Predict someone's fate with humor."""
+    user = update.effective_user
+    fate = random.choice(FATES)
+    
+    message = (
+        f"🔮 <b>FATE PREDICTION for {user.mention_html()}:</b>\n\n"
+        f"{fate}\n\n"
+        f"✨ The universe has spoken!"
+    )
+    
+    await update.message.reply_html(message)
+
 # Flask web server to keep Render happy
 app = Flask(__name__)
 
@@ -225,6 +325,8 @@ def main() -> None:
     application.add_handler(CommandHandler("truth", truth_command))
     application.add_handler(CommandHandler("dare", dare_command))
     application.add_handler(CommandHandler("wyr", wyr_command))
+    application.add_handler(CommandHandler("roast", roast_command))
+    application.add_handler(CommandHandler("fate", fate_command))
     
     # Start Flask in a separate thread
     flask_thread = Thread(target=run_flask)
