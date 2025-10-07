@@ -71,6 +71,35 @@ DARES = [
     "Post a story saying 'I lost a bet'.",
 ]
 
+# Would You Rather questions
+WOULD_YOU_RATHER = [
+    "Would you rather fight 100 duck-sized horses or 1 horse-sized duck?",
+    "Would you rather always have to sing instead of speak or dance everywhere you go?",
+    "Would you rather have a rewind button or a pause button for your life?",
+    "Would you rather be able to talk to animals or speak all human languages?",
+    "Would you rather have unlimited bacon but no more games, or unlimited games but no more bacon?",
+    "Would you rather sweat mayo or have your armpits smell like onions?",
+    "Would you rather have a mullet for a year or be bald for 6 months?",
+    "Would you rather always have to enter rooms backwards or always have to somersault out?",
+    "Would you rather have fingers as long as your legs or legs as short as your fingers?",
+    "Would you rather fight Mike Tyson once or talk like him forever?",
+    "Would you rather lose all your teeth or lose all your hair?",
+    "Would you rather have a third nipple or an extra toe?",
+    "Would you rather always wear wet socks or always have a small rock in your shoe?",
+    "Would you rather have to sneeze but not be able to, or have something stuck in your eye for an entire year?",
+    "Would you rather be forced to dance every time you hear music or be forced to sing along to any song you hear?",
+    "Would you rather have a permanently clogged nose or a piece of green spinach stuck in your teeth forever?",
+    "Would you rather communicate only in emojis or never be able to use emojis again?",
+    "Would you rather have your browser history made public or your bank balance displayed on your forehead?",
+    "Would you rather always have to say everything on your mind or never speak again?",
+    "Would you rather eat a raw onion or a raw potato?",
+    "Would you rather have your thoughts appear in text bubbles above your head or have everything you think come true?",
+    "Would you rather be itchy for the rest of your life or sticky for the rest of your life?",
+    "Would you rather have Cheetos dust on your fingers forever or have a popcorn kernel stuck in your teeth forever?",
+    "Would you rather speak in rhymes for the rest of your life or only be able to speak in questions?",
+    "Would you rather have to wear clown shoes every day or a clown wig every day?",
+]
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a message when the command /start is issued."""
     user = update.effective_user
@@ -83,6 +112,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             "<b>Commands:</b>\n"
             "🤔 /truth - Get a truth question\n"
             "💪 /dare - Get a dare challenge\n"
+            "🤔💭 /wyr - Would you rather\n"
             "❓ /help - Show help message\n\n"
             "💡 <b>Tip:</b> Add me to a group chat to play with friends!\n\n"
             "Let's have some fun! 🎉"
@@ -93,6 +123,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             "<b>How to play:</b>\n"
             "• Type /truth for a truth question\n"
             "• Type /dare for a dare challenge\n"
+            "• Type /wyr for would you rather\n"
             "• Type /help for more info\n\n"
             "Ready to have some fun? 🎉"
         )
@@ -106,9 +137,10 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         "<b>Commands:</b>\n"
         "🤔 /truth - Get a random truth question\n"
         "💪 /dare - Get a random dare challenge\n"
+        "🤔💭 /wyr - Would you rather question\n"
         "❓ /help - Show this help message\n\n"
         "<b>Group Play:</b>\n"
-        "• Anyone can use /truth or /dare anytime\n"
+        "• Anyone can use /truth, /dare, or /wyr anytime\n"
         "• All messages stay in the chat for everyone to see\n"
         "• Take turns and have fun!\n"
         "• Be honest and brave! 💪\n\n"
@@ -145,6 +177,19 @@ async def dare_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     
     await update.message.reply_html(message)
 
+async def wyr_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Send a random would you rather question."""
+    user = update.effective_user
+    wyr = random.choice(WOULD_YOU_RATHER)
+    
+    message = (
+        f"🤔💭 <b>WOULD YOU RATHER for {user.mention_html()}:</b>\n\n"
+        f"{wyr}\n\n"
+        f"🤷 Choose wisely!"
+    )
+    
+    await update.message.reply_html(message)
+
 # Flask web server to keep Render happy
 app = Flask(__name__)
 
@@ -163,7 +208,7 @@ def run_flask():
 def main() -> None:
     """Start the bot."""
     # Get token from environment variable (for cloud deployment) or use hardcoded token
-    TOKEN = os.environ.get('BOT_TOKEN', '8099766090:AAH7-FarY-kZoP7PuEriLss3Fizq7NJQFbo')
+    TOKEN = os.environ.get('BOT_TOKEN', 'YOUR_TOKEN_HERE')
     
     if TOKEN == 'YOUR_TOKEN_HERE':
         print("⚠️  WARNING: Please set your bot token!")
@@ -179,6 +224,7 @@ def main() -> None:
     application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("truth", truth_command))
     application.add_handler(CommandHandler("dare", dare_command))
+    application.add_handler(CommandHandler("wyr", wyr_command))
     
     # Start Flask in a separate thread
     flask_thread = Thread(target=run_flask)
