@@ -234,8 +234,8 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             "🔮 /fate - Get your fate prediction\n"
             "❓ /help - Show this help message\n\n"
             "<b>Group Play:</b>\n"
-            "• Anyone can use any command anytime\n"
-            "• All messages stay in the chat for everyone to see\n"
+            # "• Anyone can use any command anytime\n"
+            # "• All messages stay in the chat for everyone to see\n"
             "• Take turns and have fun!\n"
             "• Be honest and brave! 💪\n\n"
             "Enjoy! 🎉"
@@ -284,7 +284,7 @@ async def truth_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     message = (
         f"🤔 <b>TRUTH for {user.mention_html()}:</b>\n\n"
         f"{truth}\n\n"
-        f"💬 Answer honestly!"
+        # f"💬 Answer honestly!"
     )
 
     await update.message.reply_html(message)
@@ -298,7 +298,7 @@ async def dare_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     message = (
         f"💪 <b>DARE for {user.mention_html()}:</b>\n\n"
         f"{dare}\n\n"
-        f"🔥 You got this!"
+        # f"🔥 You got this!"
     )
 
     await update.message.reply_html(message)
@@ -312,7 +312,7 @@ async def wyr_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     message = (
         f"🤔💭 <b>WOULD YOU RATHER for {user.mention_html()}:</b>\n\n"
         f"{wyr}\n\n"
-        f"🤷 Choose wisely!"
+        # f"🤷 Choose wisely!"
     )
 
     await update.message.reply_html(message)
@@ -326,7 +326,7 @@ async def roast_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     message = (
         f"🔥 <b>ROAST for {user.mention_html()}:</b>\n\n"
         f"{roast}\n\n"
-        f"😏 Just kidding... or am I?"
+        # f"😏 Just kidding... or am I?"
     )
 
     await update.message.reply_html(message)
@@ -340,7 +340,7 @@ async def fate_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     message = (
         f"🔮 <b>FATE PREDICTION for {user.mention_html()}:</b>\n\n"
         f"{fate}\n\n"
-        f"✨ The universe has spoken!"
+        # f"✨ The universe has spoken!"
     )
 
     await update.message.reply_html(message)
