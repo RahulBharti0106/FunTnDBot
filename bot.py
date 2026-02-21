@@ -5,7 +5,7 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler, Cont
 import random
 from threading import Thread
 from flask import Flask
-from data import TRUTHS, DARES, WOULD_YOU_RATHER, ROASTS, FATES
+from bot_data import TRUTHS, DARES, WOULD_YOU_RATHER, ROASTS, FATES
 
 
 # Enable logging
